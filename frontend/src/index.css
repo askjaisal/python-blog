@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme {
+	--color-paper: #f4f5ef;
+	--color-paper-bright: #fffef9;
+	--color-ink: #202923;
+	--color-moss: #536057;
+	--color-rule: #cdd2c7;
+	--color-accent: #315ba8;
+	--color-accent-dark: #244886;
+	--color-alert: #a62f2b;
+	--font-editorial: Georgia, "Times New Roman", serif;
+	--font-ui: "Aptos", "Segoe UI", sans-serif;
+}
+
+@utility paper-grid {
+	background-image: linear-gradient(rgba(32, 41, 35, 0.035) 1px, transparent 1px);
+	background-size: 100% 32px;
+}
+
+@layer base {
+	* {
+		box-sizing: border-box;
+	}
+
+	html {
+		min-width: 320px;
+		background: #f4f5ef;
+		font-family: "Aptos", "Segoe UI", sans-serif;
+	}
+
+	body {
+		min-width: 320px;
+		min-height: 100vh;
+		margin: 0;
+	}
+
+	button,
+	input,
+	textarea {
+		font: inherit;
+	}
+}
