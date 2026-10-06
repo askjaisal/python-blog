@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { api } from "../api";
 import SiteHeader from "../SiteHeader";
 
 type Post = {
@@ -31,8 +32,8 @@ function PostDetail() {
 
 			try {
 				const [postResponse, userResponse] = await Promise.all([
-					axios.get(`http://localhost:8000/post/${postId}`),
-					axios.get("http://localhost:8000/users/me", { withCredentials: true }).catch(() => null),
+					api.get(`/post/${postId}`),
+					api.get("/users/me").catch(() => null),
 				]);
 
 				if (!isCurrent) return;

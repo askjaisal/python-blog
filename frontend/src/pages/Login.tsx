@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { api } from "../api";
 
 function Login() {
   const navigate = useNavigate();
@@ -16,11 +17,9 @@ function Login() {
     setIsSubmitting(true);
 
     try {
-      await axios.post("http://localhost:8000/users/login", {
+      await api.post("/users/login", {
         email,
         password,
-      }, {
-        withCredentials: true,
       });
 
       navigate("/home");

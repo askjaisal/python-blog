@@ -1,6 +1,7 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { api } from "../api";
 import SiteHeader from "../SiteHeader";
 
 function CreatePost() {
@@ -21,7 +22,7 @@ function CreatePost() {
 
 		async function loadPost() {
 			try {
-				const response = await axios.get(`http://localhost:8000/post/${postId}`);
+				const response = await api.get(`/post/${postId}`);
 				setTitle(response.data.title);
 				setContent(response.data.content);
 				setBannerImageUrl(response.data.banner_image_url ?? "");
@@ -61,7 +62,7 @@ function CreatePost() {
 			if (imageFile) {
 				const formData = new FormData();
 				formData.append("file", imageFile);
-				const uploadResponse = await axios.post("http://localhost:8000/uploads/image", formData, {
+				const uploadResponse = await api.post("/uploads/image", formData, {
 					withCredentials: true,
 				});
 				uploadedImageUrl = uploadResponse.data.image_url;
@@ -77,9 +78,9 @@ function CreatePost() {
 			};
 
 			if (isEditing && postId) {
-				await axios.put(`http://localhost:8000/post/${postId}`, postData, requestConfig);
+				await api.put(`/post/${postId}`, postData, requestConfig);
 			} else {
-				await axios.post("http://localhost:8000/post/", postData, requestConfig);
+				await api.post("/post/", postData, requestConfig);
 			}
 
 			navigate("/posts");

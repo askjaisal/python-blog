@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { api } from "../api";
 
 function Signup() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ function Signup() {
     setIsSubmitting(true);
 
     try {
-      await axios.post("http://localhost:8000/users/", {
+      await api.post("/users/", {
         username,
         email,
         password,

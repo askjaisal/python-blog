@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { api } from "../api";
 import SiteHeader from "../SiteHeader";
 
 type Post = {
@@ -32,8 +33,8 @@ function Posts() {
     async function getPosts() {
       try {
         const [response, userResponse] = await Promise.all([
-          axios.get("http://localhost:8000/post/", { params: { page, page_size: PAGE_SIZE } }),
-          axios.get("http://localhost:8000/users/me", { withCredentials: true }).catch(() => null),
+          api.get("/post/", { params: { page, page_size: PAGE_SIZE } }),
+          api.get("/users/me").catch(() => null),
         ]);
 
         setPosts(response.data.posts ?? []);

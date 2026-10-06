@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { api } from "./api";
 
 type SiteHeaderProps = {
 	currentPage: "home" | "journal" | "create";
@@ -16,9 +17,7 @@ function SiteHeader({ currentPage }: SiteHeaderProps) {
 		setIsLoggingOut(true);
 
 		try {
-			await axios.post("http://localhost:8000/users/logout", {}, {
-				withCredentials: true,
-			});
+			await api.post("/users/logout", {});
 
 			navigate("/login", { replace: true });
 		} catch (error) {

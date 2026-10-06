@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { api } from "../api";
 import SiteHeader from "../SiteHeader.tsx";
 
 const FEED_PAGE_SIZE = 5;
@@ -34,9 +35,7 @@ function Home() {
   useEffect(() => {
     async function getCurrentUser() {
       try {
-        const response = await axios.get("http://localhost:8000/users/me", {
-          withCredentials: true,
-        });
+        const response = await api.get("/users/me");
 
         setUser(response.data);
       } catch {
@@ -54,7 +53,7 @@ function Home() {
 
     async function getPosts() {
       try {
-        const response = await axios.get("http://localhost:8000/post/", {
+        const response = await api.get("/post/", {
           params: { page: feedPage, page_size: FEED_PAGE_SIZE },
         });
 
