@@ -19,6 +19,7 @@ app.add_middleware(
         "http://localhost:5173",
         "http://localhost:5174",
         "https://feildnotes.onrender.com",
+        "https://feildnotes.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
