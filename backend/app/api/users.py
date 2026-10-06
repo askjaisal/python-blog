@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Cookie, Depends, HTTPException, Response
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Response
 from datetime import datetime, timezone, timedelta
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -49,6 +49,7 @@ def create_user(
 
 @router.post("/login")
 def login_user(
+    request: Request,
     user_data: UserLogin,
     response: Response,
     db: Session = Depends(get_db),
@@ -78,13 +79,17 @@ def login_user(
 
     db.commit()
 
+    origin = request.headers.get("origin")
+    is_cross_site = bool(origin) and not origin.startswith(("http://localhost", "http://127.0.0.1"))
+
     response.set_cookie(
         key="session_token",
         value=session_token,
         httponly=True,
-        secure=False,
-        samesite="lax",
+        secure=True if is_cross_site else False,
+        samesite="none" if is_cross_site else "lax",
         max_age=7 * 24 * 60 * 60,
+        path="/",
     )
 
     return {
@@ -122,6 +127,6 @@ def logout_user(
             db.delete(user_session)
             db.commit()
 
-    response.delete_cookie(key="session_token")
+    response.delete_cookie(key="session_token", path="/")
 
     return {"message": "Logout successful"}
