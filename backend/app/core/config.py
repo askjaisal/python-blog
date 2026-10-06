@@ -2,13 +2,13 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    app_env: str = "development"
+    app_env: str
     database_url: str | None = None
-    database_host: str = "localhost"
-    database_port: int = 5432
-    database_name: str = "python_blog"
-    database_user: str = "postgres"
-    database_password: str = "postgres"
+    database_host: str
+    database_port: int
+    database_name: str
+    database_user: str
+    database_password: str
 
     cloudinary_cloud_name: str = ""
     cloudinary_api_key: str = ""

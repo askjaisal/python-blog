@@ -19,6 +19,7 @@ def build_database_url() -> str:
             host=settings.database_host,
             port=settings.database_port,
             database=settings.database_name,
+            query={"sslmode": "prefer"},
         )
     )
 
