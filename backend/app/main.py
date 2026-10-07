@@ -8,10 +8,13 @@ app = FastAPI(title = "Blog API")
 from app.api.users import router as users_router
 from app.api.post import router as post_router
 from app.api.uploads import router as upload_router
+from app.api.comment import router as comments_router
 
 app.include_router(users_router)
 app.include_router(post_router)
 app.include_router(upload_router)
+app.include_router(comments_router)
+
 
 app.add_middleware(
     CORSMiddleware,
