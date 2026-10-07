@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { api } from "../api";
 import SiteHeader from "../SiteHeader";
+import { sanitizeBlogHtml } from "../blogContent";
 
 type Post = {
 	id: number;
@@ -142,7 +143,7 @@ function PostDetail() {
 							{post.banner_image_url && (
 								<img className="mb-9 aspect-[16/8] w-full object-cover sm:mb-12" src={post.banner_image_url} alt={post.title} />
 							)}
-							<div className="whitespace-pre-wrap text-base leading-8 text-ink sm:text-lg sm:leading-9">{post.content}</div>
+							<div className="blog-article-content" dangerouslySetInnerHTML={{ __html: sanitizeBlogHtml(post.content) }} />
 						</article>
 					)}
 

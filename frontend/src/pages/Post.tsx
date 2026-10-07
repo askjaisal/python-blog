@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { api } from "../api";
 import SiteHeader from "../SiteHeader";
+import { blogContentText } from "../blogContent";
 
 type Post = {
   id: number;
@@ -114,7 +115,7 @@ function Posts() {
                     )}
                   </div>
                 </div>
-                <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-moss">{post.content}</p>
+                <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-moss">{blogContentText(post.content)}</p>
               </div>
             </article>
           ))}

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { api } from "../api";
 import SiteHeader from "../SiteHeader";
+import RichTextEditor from "../RichTextEditor";
 
 function CreatePost() {
 	const navigate = useNavigate();
@@ -54,6 +55,10 @@ function CreatePost() {
 
 	async function handleSubmit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
+		if (!content.replace(/<[^>]*>/g, "").trim() && !content.includes("<img")) {
+			setError("Please add some content to your story.");
+			return;
+		}
 		setError("");
 		setIsSubmitting(true);
 
@@ -99,6 +104,35 @@ function CreatePost() {
 		}
 	}
 
+	async function handleInlineImageUpload(file: File): Promise<string> {
+		if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+			const message = "Choose a JPEG, PNG, or WEBP image.";
+			setError(message);
+			throw new Error(message);
+		}
+		if (file.size > 10 * 1024 * 1024) {
+			const message = "Images must be 10 MB or smaller.";
+			setError(message);
+			throw new Error(message);
+		}
+
+		try {
+			const formData = new FormData();
+			formData.append("file", file);
+			const response = await api.post("/uploads/image", formData, { withCredentials: true });
+			const imageUrl = response.data.image_url;
+			if (typeof imageUrl !== "string" || !imageUrl) throw new Error("The image upload did not return a URL.");
+			setError("");
+			return imageUrl;
+		} catch (error) {
+			const message = axios.isAxiosError(error)
+				? error.response?.data?.detail ?? "Could not upload this image. Please try again."
+				: error instanceof Error ? error.message : "Could not upload this image. Please try again.";
+			setError(message);
+			throw new Error(message, { cause: error });
+		}
+	}
+
 	return (
 		<main className="paper-grid min-h-screen bg-paper px-5 pb-16 text-ink sm:px-[7vw]">
 			<div className="mx-auto max-w-6xl">
@@ -135,19 +169,18 @@ function CreatePost() {
 					/>
 
 					<label className="mb-2 text-xs font-bold uppercase text-moss" htmlFor="post-content">Your story</label>
-					<textarea
-						id="post-content"
-						className="min-h-60 w-full resize-y border-0 border-b border-rule bg-white/40 px-4 py-4 text-sm leading-7 text-ink outline-none transition placeholder:text-moss/70 focus:border-accent focus:ring-0 sm:min-h-[300px]"
-						placeholder="Start writing..."
+					<RichTextEditor
 						value={content}
-						onChange={(event) => setContent(event.target.value)}
-						required
+						onChange={setContent}
+						placeholder="Start writing..."
+						minHeight={300}
+						onImageUpload={handleInlineImageUpload}
 					/>
 
 					{error && <p className="mt-4 border-l-2 border-alert bg-alert/5 px-3 py-2 text-sm text-alert" role="alert">{error}</p>}
 
 					<div className="mt-6 flex items-center justify-between gap-4">
-						<span className="text-xs text-moss">{content.length} characters</span>
+						<span className="text-xs text-moss">{content.replace(/<[^>]*>/g, "").length} characters</span>
 						<button className="inline-flex min-h-12 items-center justify-center gap-5 bg-accent px-5 text-sm font-bold text-white transition-colors hover:bg-accent-dark disabled:cursor-wait disabled:opacity-70" type="submit" disabled={isSubmitting}>
 							{isSubmitting ? "Saving..." : isEditing ? "Save changes" : "Publish post"}
 							{!isSubmitting && <span aria-hidden="true">↗</span>}
